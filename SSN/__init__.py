@@ -1,2 +1,2 @@
 from .sequenceSimilarityNetwork import sequenceSimilarityNetwork
-from .alignments import *
+from .alignment import *

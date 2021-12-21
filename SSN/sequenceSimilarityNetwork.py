@@ -2,7 +2,7 @@ import os
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-from pycbbl import alignment
+import alignment
 
 class sequenceSimilarityNetwork:
     """
