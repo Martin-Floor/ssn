@@ -2,6 +2,7 @@ import os
 import numpy as np
 from collections import OrderedDict
 import subprocess
+import uuid
 
 class blast:
     """
@@ -72,13 +73,15 @@ class blast:
         max_target_seqs = str(max_target_seqs)
 
         # Write target sequence into a temporary file
-        with open('seq1.fasta.tmp', 'w') as sf1:
+        target_file = '.'+str(uuid.uuid4())+'.fasta.tmp'
+        output_file = '.'+str(uuid.uuid4())+'.out.tmp'
+        with open(target_file, 'w') as sf1:
             sf1.write('>seq1\n')
             sf1.write(str(target_sequence))
 
         # Execute blastp calculation
         # Run blastp
-        command = 'blastp -query seq1.fasta.tmp -subject '+path_to_database_fasta+' -out dbblast.out.tmp -max_target_seqs '+max_target_seqs
+        command = 'blastp -query '+target_file+' -subject '+path_to_database_fasta+' -out '+output_file+' -max_target_seqs '+max_target_seqs
         try:
             output = subprocess.check_output(command,stderr=subprocess.STDOUT,
                                              shell=True, universal_newlines=True)
@@ -86,11 +89,11 @@ class blast:
             print(exc.output, exc.returncode)
             raise Exception("Problem with blastp execution.")
 
-        blast_results = blast._parseBlastpOutput('dbblast.out.tmp')
+        blast_results = blast._parseBlastpOutput(output_file)
 
         # Remove temporary files
-        os.remove('seq1.fasta.tmp')
-        os.remove('dbblast.out.tmp')
+        os.remove(target_file)
+        os.remove(output_file)
 
         return blast_results
 

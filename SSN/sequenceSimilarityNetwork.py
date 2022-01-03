@@ -116,6 +116,9 @@ class sequenceSimilarityNetwork:
             Whether to overwrite an existing network file.
         """
 
+        if threshold < 0 or threshold > 1:
+            raise ValueError('Wrong Threshold! The threshold must be a number between zero and one.')
+
         if not output_file.endswith('.sif'):
             output_file = output_file+'.sif'
 
@@ -190,7 +193,7 @@ class sequenceSimilarityNetwork:
                     print('The new attribute value will be %s' % attribute_values[code])
                 self.node_attributes[attribute_name][code] = attribute_values[code]
 
-    def createNodeAttributesFile(self, output_file, overwrite=None):
+    def createNodeAttributesFile(self, output_file, overwrite=None, separator=', '):
         """
         Create a node property file using the properties given to the sequenceSimilarityNetwork.
 
@@ -208,13 +211,13 @@ class sequenceSimilarityNetwork:
         with open(output_file, 'w') as af:
 
             # Write header line
-            af.write('code\t'+'\t'.join(self.node_attributes)+'\n')
+            af.write('code'+separator+separator.join(self.node_attributes)+'\n')
 
             for code in self.codes:
                 attribute_line = ''
                 for attribute in self.node_attributes:
                     attribute_line += self.node_attributes[attribute][code]+'\t'
-                af.write('%s\t%s\n' % (code, attribute_line))
+                af.write(code+separator+attribute_line+'\n')
 
     def colorNodeFillByAttribute(self, attribute_name, overwrite=False):
         """

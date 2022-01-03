@@ -6,7 +6,8 @@ from .methods import *
 
 class cdhit:
 
-    def clusterSequences(sequences, pid_threshold=0.9, return_identities=False):
+    def clusterSequences(sequences, pid_threshold=0.9, return_identities=False,
+                         keep_sequence_file=None):
         """
         Cluster sequences by PID using CD-HIT program.
 
@@ -21,7 +22,8 @@ class cdhit:
         return_identities : bool
             Whether to return the identities of cluster member to the representative
             sequence.
-
+        keep_sequence_file : str
+            keep CD-HIT fasta sequence file
         Returns
         -------
         clusters : dict
@@ -53,7 +55,7 @@ class cdhit:
             output = subprocess.check_output(
                         command, stderr=subprocess.STDOUT, shell=True,
                         universal_newlines=True)
-                        
+
         except subprocess.CalledProcessError as exc:
             print(exc.output, exc.returncode)
             raise Exception("Problem with CDHIT input")
@@ -104,6 +106,10 @@ class cdhit:
 
         if delete_temp:
             os.remove(temp_fasta_file)
+
+        if keep_sequence_file:
+            shutil.copyfile('cdhit_clusters.tmp', keep_sequence_file)
+
         os.remove('cdhit_clusters.tmp.clstr')
         os.remove('cdhit_clusters.tmp')
 
